@@ -16,6 +16,7 @@ public class AVLTree {
     private Node root;
 
     public Node find(int value) {
+
         return find(root, value);
     }
 
@@ -59,6 +60,7 @@ public class AVLTree {
     }
 
     public void insert(int value) {
+
         root = insert(root, value);
     }
 
@@ -79,6 +81,7 @@ public class AVLTree {
     }
 
     public void remove(int value) {
+
         root = remove(root, value);
     }
 
@@ -109,28 +112,38 @@ public class AVLTree {
     }
 
     private void updateHeight(Node node) {
+
         node.height = 1 + Math.max(height(node.left), height(node.right));
     }
 
 
     private Node balance(Node node) {
-        int balanceFactor = getBalanceFactor(node);
+        if (node == null) return null;
 
-        if (balanceFactor > 1) {
+        int balanceFactor = getBalanceFactor(node);
+        System.out.println("Balancing Node " + node.value + " with Balance Factor = " + balanceFactor);
+
+        if (balanceFactor > 1) { // Left-heavy case
             if (getBalanceFactor(node.left) < 0) {
+                System.out.println("Performing Left-Right (LR) Rotation at Node " + node.value);
                 node.left = rotateLeft(node.left);
             }
+            System.out.println("Performing Right Rotation at Node " + node.value);
             return rotateRight(node);
         }
-        if (balanceFactor < -1) {
+
+        if (balanceFactor < -1) { // Right-heavy case
             if (getBalanceFactor(node.right) > 0) {
+                System.out.println("Performing Right-Left (RL) Rotation at Node " + node.value);
                 node.right = rotateRight(node.right);
             }
+            System.out.println("Performing Left Rotation at Node " + node.value);
             return rotateLeft(node);
         }
 
         return node;
     }
+
 
     private Node rotateLeft(Node z) {
         Node y = z.right;
@@ -139,10 +152,10 @@ public class AVLTree {
         y.left = z;
         z.right = T2;
 
-        updateHeight(z);
-        updateHeight(y);
+        updateHeight(z);  // Update height of the rotated node
+        updateHeight(y);  // Update height of the new root
 
-        return y;
+        return y;  // Return the new root of the subtree
     }
 
     private Node rotateRight(Node z) {
@@ -152,11 +165,12 @@ public class AVLTree {
         y.right = z;
         z.left = T3;
 
-        updateHeight(z);
-        updateHeight(y);
+        updateHeight(z);  // Update height of the rotated node
+        updateHeight(y);  // Update height of the new root
 
-        return y;
+        return y;  // Return the new root of the subtree
     }
+
 
 
     public void printTree() {
@@ -172,17 +186,10 @@ public class AVLTree {
         }
     }
 
-    public void printTreeStructure() {
-        printTreeStructure(root, 0);
-    }
 
-    private void printTreeStructure(Node node, int level) {
-        if (node != null) {
-            printTreeStructure(node.right, level + 1);
-            System.out.println(repeat("  ", level) + node.value + " (h=" + node.height + ")");
-            printTreeStructure(node.left, level + 1);
-        }
-    }
+
+
+
     private String repeat(String str, int count) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < count; i++) {
@@ -198,11 +205,11 @@ public class AVLTree {
 
         // Step 1: Insert values
         System.out.println("\n--- Insertions ---");
-        int[] valuesToInsert = {30, 20, 40, 10, 25, 35, 50};
+        int[] valuesToInsert = {70, 60, 50, 40, 30, 20, 10};
         for (int value : valuesToInsert) {
             System.out.println("\nInserting " + value + "...");
             tree.insert(value);
-            tree.printTreeStructure(); // Visualize the tree structure after each insertion
+          //  tree.printTreeStructure(); // Visualize the tree structure after each insertion
             System.out.println("Balance Factors after insertion:");
             printBalanceFactors(tree.root); // Pass the tree's root to print balance factors
         }
@@ -223,7 +230,7 @@ public class AVLTree {
         for (int value : valuesToRemove) {
             System.out.println("\nRemoving " + value + "...");
             tree.remove(value);
-            tree.printTreeStructure(); // Visualize the tree structure after each deletion
+          //  tree.printTreeStructure(); // Visualize the tree structure after each deletion
             System.out.println("Balance Factors after removal:");
             printBalanceFactors(tree.root); // Pass the tree's root to print balance factors
         }
